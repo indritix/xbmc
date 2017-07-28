@@ -35,6 +35,7 @@ namespace KODI
 namespace RETRO
 {
   class CRetroPlayerAudio;
+  class CRetroPlayerAutoSave;
   class CRetroPlayerVideo;
 
   class CRetroPlayer : public IPlayer,
@@ -107,7 +108,6 @@ namespace RETRO
     //virtual int GetSourceBitrate() override { return 0; }
     bool GetStreamDetails(CStreamDetails &details) override;
     void SetSpeed(float speed) override;
-    float GetSpeed() override;
     //virtual bool IsCaching() const override { return false; }
     //virtual int GetCacheLevel() const override { return -1; }
     //virtual bool IsInMenu() const override { return false; }
@@ -123,13 +123,11 @@ namespace RETRO
     //virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) override { subCaps.assign(1,IPC_SUBS_ALL); }
     void FrameMove() override;
     void Render(bool clear, uint32_t alpha = 255, bool gui = true) override { m_renderManager.Render(clear, 0, alpha, gui); }
-    void FlushRenderer() override { m_renderManager.Flush(); }
+    void FlushRenderer() override { m_renderManager.Flush(true); }
     void SetRenderViewMode(int mode) override { m_renderManager.SetViewMode(mode); }
     float GetRenderAspectRatio() override { return m_renderManager.GetAspectRatio(); }
     void TriggerUpdateResolution() override { m_renderManager.TriggerUpdateResolution(0.0f, 0, 0); }
     bool IsRenderingVideo() override { return m_renderManager.IsConfigured(); }
-    bool IsRenderingGuiLayer() override { return m_renderManager.IsGuiLayer(); }
-    bool IsRenderingVideoLayer() override { return m_renderManager.IsVideoLayer(); }
     bool Supports(EINTERLACEMETHOD method) override;
     EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
     bool Supports(ESCALINGMETHOD method) override { return m_renderManager.Supports(method); }
@@ -140,13 +138,21 @@ namespace RETRO
     bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return m_renderManager.RenderCaptureGetPixels(captureId, millis, buffer, size); }
 
     // implementation of IRenderMsg
-    void VideoParamsChange() override { }
-    void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
-    void UpdateClockSync(bool enabled) override;
-    void UpdateRenderInfo(CRenderInfo &info) override;
-    void UpdateRenderBuffers(int queued, int discard, int free) override {}
+    virtual void VideoParamsChange() override { }
+    virtual void GetDebugInfo(std::string &audio, std::string &video, std::string &general) override { }
+    virtual void UpdateClockSync(bool enabled) override;
+    virtual void UpdateRenderInfo(CRenderInfo &info) override;
+    virtual void UpdateRenderBuffers(int queued, int discard, int free) override;
+    virtual void UpdateGuiRender(bool gui) override;
+    virtual void UpdateVideoRender(bool video) override;
 
   private:
+    /*!
+     * \brief Called when the speed changes
+     * \param newSpeed The new speed, possibly equal to the previous speed
+     */
+    void OnSpeedChange(double newSpeed);
+
     /*!
      * \brief Closes the OSD and shows the FullscreenGame window
      */
@@ -171,6 +177,7 @@ namespace RETRO
     std::unique_ptr<CProcessInfo>      m_processInfo;
     std::unique_ptr<CRetroPlayerAudio> m_audio;
     std::unique_ptr<CRetroPlayerVideo> m_video;
+    std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
     GAME::GameClientPtr                m_gameClient;
     CCriticalSection                   m_mutex;
   };

@@ -297,7 +297,7 @@ void CSettingConditions::Initialize()
 #ifdef HAS_GLES
   m_simpleConditions.insert("has_gles");
 #endif
-#if HAS_GLES == 2
+#if HAS_GLES >= 2
   m_simpleConditions.insert("has_glesv2");
 #endif
 #ifdef HAS_TIME_SERVER
@@ -312,7 +312,7 @@ void CSettingConditions::Initialize()
 #ifdef HAS_ZEROCONF
   m_simpleConditions.insert("has_zeroconf");
 #endif
-#ifdef HAS_OMXPLAYER
+#ifdef TARGET_RASPBERRY_PI
   m_simpleConditions.insert("has_omxplayer");
 #endif
 #ifdef HAVE_LIBVA

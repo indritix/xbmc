@@ -827,11 +827,12 @@ bool CAddonMgr::DisableAddon(const std::string& id)
     return false;
 
   //success
-  ADDON::OnDisabled(id);
-
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
+  {
+    ADDON::OnDisabled(addon);
     CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
+  }
 
   m_events.Publish(AddonEvents::Disabled(id));
   return true;
@@ -858,7 +859,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!m_database.DisableAddon(id, false))
     return false;
   m_disabled.erase(id);
-  ADDON::OnEnabled(id);
+  ADDON::OnEnabled(addon);
 
   CEventLog::GetInstance().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
@@ -1002,9 +1003,6 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin)
     "all",
 #if defined(TARGET_ANDROID)
     "android",
-#elif defined(TARGET_RASPBERRY_PI)
-    "rbpi",
-    "linux",
 #elif defined(TARGET_FREEBSD)
     "freebsd",
     "linux",
@@ -1093,9 +1091,6 @@ std::string CAddonMgr::GetPlatformLibraryName(cp_cfg_element_t *base) const
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
 #if defined(TARGET_FREEBSD)
   libraryName = GetExtValue(base, "@library_freebsd");
-  if (libraryName.empty())
-#elif defined(TARGET_RASPBERRY_PI)
-  libraryName = GetExtValue(base, "@library_rbpi");
   if (libraryName.empty())
 #endif
   libraryName = GetExtValue(base, "@library_linux");

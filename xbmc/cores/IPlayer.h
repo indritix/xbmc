@@ -27,7 +27,6 @@
 #include "IPlayerCallback.h"
 #include "guilib/Geometry.h"
 #include "guilib/Resolution.h"
-#include "pvr/PVRTypes.h"
 
 #define CURRENT_STREAM -1
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
@@ -326,7 +325,7 @@ public:
   virtual int GetSourceBitrate(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void SetSpeed(float speed) = 0;
-  virtual float GetSpeed() = 0;
+  virtual void SetTempo(float tempo) { };
   virtual bool SupportsTempo() { return false; }
 
   //Returns true if not playback (paused or stopped being filled)
@@ -346,8 +345,6 @@ public:
   
   virtual std::string GetPlayingTitle() { return ""; };
 
-  virtual bool SwitchChannel(const PVR::CPVRChannelPtr &channel) { return false; }
-
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
   /*!
    \brief define the subtitle capabilities of the player
@@ -358,22 +355,12 @@ public:
    \brief hook into render loop of render thread
    */
   virtual void FrameMove() {};
-
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
-
   virtual void FlushRenderer() {};
-
   virtual void SetRenderViewMode(int mode) {};
-
   virtual float GetRenderAspectRatio() { return 1.0; };
-
   virtual void TriggerUpdateResolution() {};
-
   virtual bool IsRenderingVideo() { return false; };
-
-  virtual bool IsRenderingGuiLayer() { return false; };
-
-  virtual bool IsRenderingVideoLayer() { return false; };
 
   virtual bool Supports(EINTERLACEMETHOD method) { return false; };
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }

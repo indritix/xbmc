@@ -1381,18 +1381,6 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrplayback.startlast" type="integer" label="19189" help="36228">
-          <level>1</level>
-          <default>0</default> <!-- CONTINUE_LAST_CHANNEL_OFF -->
-          <constraints>
-            <options>
-              <option label="106">0</option>   <!-- CONTINUE_LAST_CHANNEL_OFF -->
-              <option label="19190">1</option> <!-- CONTINUE_LAST_CHANNEL_IN_BACKGROUND -->
-              <option label="19288">2</option> <!-- CONTINUE_LAST_CHANNEL_IN_FOREGROUND -->
-            </options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
         <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
           <level>2</level>
           <default>true</default>
@@ -2206,13 +2194,23 @@
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.ditherdepth" type="integer" label="36100" help="36599">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>8</default>
           <constraints>
@@ -2226,13 +2224,23 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="videoscreen.cmsenabled" type="boolean" label="36560" help="36561">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="videoscreen.cmsmode" type="integer" label="36562" help="36563">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>0</default>
           <constraints>
@@ -2245,9 +2253,10 @@
         </setting>
         <setting id="videoscreen.cms3dlut" type="string" label="36564" help="36565">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
-            </and>
+              <condition>HAS_DX</condition>
+            </or>
           </requirement>
           <level>3</level>
           <default></default>
@@ -2262,8 +2271,11 @@
         </setting>
         <setting id="videoscreen.displayprofile" type="string" label="36566" help="36567">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2280,8 +2292,11 @@
         </setting>
         <setting id="videoscreen.cmswhitepoint" type="integer" label="36568" help="36569">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2298,8 +2313,11 @@
         </setting>
         <setting id="videoscreen.cmsprimaries" type="integer" label="36570" help="36571">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2316,8 +2334,11 @@
         </setting>
         <setting id="videoscreen.cmsgammamode" type="integer" label="36572" help="36573">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2334,8 +2355,11 @@
         </setting>
         <setting id="videoscreen.cmsgamma" type="integer" label="36574" help="36575">
           <requirement>
-            <and>
+            <or>
               <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+            <and>
               <condition>HAVE_LCMS2</condition>
             </and>
           </requirement>
@@ -2354,7 +2378,12 @@
           <control type="spinner" format="integer" />
         </setting>
         <setting id="videoscreen.cmslutsize" type="integer" label="36576" help="36577">
-          <requirement>HAS_GL</requirement>
+          <requirement>
+            <or>
+              <condition>HAS_GL</condition>
+              <condition>HAS_DX</condition>
+            </or>
+          </requirement>
           <level>3</level>
           <default>6</default>
           <constraints>
@@ -3227,6 +3256,24 @@
           </dependencies>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
+          </dependencies>
+          <control type="button" format="action">
+            <hidevalue>true</hidevalue>
+          </control>
+        </setting>
       </group>
     </category>
     <category id="regional" label="14222" help="36113">
@@ -3472,8 +3519,20 @@
         </setting>
       </group>
     </category>
-    <category id="other" label="14224" help="36102">
-      <group id="2" label="513">
+    <category id="other" label="14224" help="36292">
+      <group id="2" label="14227">
+        <setting id="lookandfeel.startupaction" type="integer" label="39100" help="36161">
+          <level>0</level>
+          <default>0</default> <!-- STARTUP_ACTION_NONE -->
+          <constraints>
+            <options>
+              <option label="231">0</option> <!-- STARTUP_ACTION_NONE -->
+              <option label="39101">1</option> <!-- STARTUP_ACTION_PLAY_TV -->
+              <option label="39102">2</option> <!-- STARTUP_ACTION_PLAY_RADIO -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="lookandfeel.startupwindow" type="integer" label="512" help="36109">
           <level>0</level>
           <default>10000</default> <!-- WINDOW_HOME -->
@@ -3484,24 +3543,6 @@
             <dependency type="update" setting="lookandfeel.skin" />
           </dependencies>
           <control type="list" format="string" />
-        </setting>
-        <setting id="lookandfeel.enablerssfeeds" type="boolean" label="13305" help="36111">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
-        <setting id="lookandfeel.rssedit" type="string" parent="lookandfeel.enablerssfeeds" label="21450" help="36112">
-          <level>1</level>
-          <default></default>
-          <constraints>
-            <allowempty>true</allowempty>
-          </constraints>
-          <dependencies>
-            <dependency type="enable" setting="lookandfeel.enablerssfeeds">true</dependency>
-          </dependencies>
-          <control type="button" format="action">
-            <hidevalue>true</hidevalue>
-          </control>
         </setting>
       </group>
     </category>

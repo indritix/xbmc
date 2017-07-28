@@ -26,6 +26,12 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
+#include "cores/VideoPlayer/Process/osx/ProcessInfoOSX.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGL.h"
 #include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
@@ -64,18 +70,18 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidMoveNoteClass*) initWith: (void*) userdata;
 -  (void) windowDidMoveNotification:(NSNotification*) note;
 @end
 
 @implementation windowDidMoveNoteClass
-+ initWith: (void*) userdata;
++ (windowDidMoveNoteClass*) initWith: (void*) userdata
 {
     windowDidMoveNoteClass *windowDidMove = [windowDidMoveNoteClass new];
     windowDidMove->m_userdata = userdata;
     return [windowDidMove autorelease];
 }
--  (void) windowDidMoveNotification:(NSNotification*) note;
+-  (void) windowDidMoveNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -103,17 +109,17 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidReSizeNoteClass*) initWith: (void*) userdata;
 - (void) windowDidReSizeNotification:(NSNotification*) note;
 @end
 @implementation windowDidReSizeNoteClass
-+ initWith: (void*) userdata;
++ (windowDidReSizeNoteClass*) initWith: (void*) userdata
 {
     windowDidReSizeNoteClass *windowDidReSize = [windowDidReSizeNoteClass new];
     windowDidReSize->m_userdata = userdata;
     return [windowDidReSize autorelease];
 }
-- (void) windowDidReSizeNotification:(NSNotification*) note;
+- (void) windowDidReSizeNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -147,17 +153,17 @@ using namespace KODI::WINDOWING;
 {
   void *m_userdata;
 }
-+ initWith: (void*) userdata;
++ (windowDidChangeScreenNoteClass*) initWith: (void*) userdata;
 - (void) windowDidChangeScreenNotification:(NSNotification*) note;
 @end
 @implementation windowDidChangeScreenNoteClass
-+ initWith: (void*) userdata;
++ (windowDidChangeScreenNoteClass*) initWith: (void*) userdata
 {
     windowDidChangeScreenNoteClass *windowDidChangeScreen = [windowDidChangeScreenNoteClass new];
     windowDidChangeScreen->m_userdata = userdata;
     return [windowDidChangeScreen autorelease];
 }
-- (void) windowDidChangeScreenNotification:(NSNotification*) note;
+- (void) windowDidChangeScreenNotification:(NSNotification*) note
 {
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
@@ -773,6 +779,14 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   int dummy;
   m_lastDisplayNr = resInfo.iScreen;
   GetScreenResolution(&dummy, &dummy, &m_refreshRate, GetCurrentScreen());
+
+  // register platform dependent objects
+  CDVDFactoryCodec::ClearHWAccels();
+  VTB::CDecoder::Register();
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CLinuxRendererGL::Register();
+  CRendererVTB::Register();
+  VIDEOPLAYER::CProcessInfoOSX::Register();
 
   return true;
 }

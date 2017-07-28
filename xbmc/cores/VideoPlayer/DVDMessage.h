@@ -21,15 +21,9 @@
 
 #pragma once
 
-#ifdef __GNUC__
-// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even with optimizations.
-#define XBMC_FORCE_INLINE __attribute__((always_inline))
-#else
-#define XBMC_FORCE_INLINE
-#endif
-
-// include as less is possible to prevent dependencies
 #include "DVDResource.h"
+#include "FileItem.h"
+#include "cores/IPlayer.h"
 #include <atomic>
 #include <string>
 #include <string.h>
@@ -64,13 +58,7 @@ public:
     PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
     PLAYER_REQUEST_STATE,
-
-    PLAYER_CHANNEL_NEXT,            // switches to next playback channel
-    PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    PLAYER_CHANNEL_PREVIEW_NEXT,    // switches to next channel preview (does not switch the channel)
-    PLAYER_CHANNEL_PREVIEW_PREV,    // switches to previous channel preview (does not switch the channel)
-    PLAYER_CHANNEL_SELECT_NUMBER,   // switches to the channel with the provided channel number
-    PLAYER_CHANNEL_SELECT,          // switches to the provided channel
+    PLAYER_OPENFILE,
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
     PLAYER_AVCHANGE,                // signal a change in audio or video parameters
     PLAYER_ABORT,
@@ -94,17 +82,17 @@ public:
     m_message = msg;
   }
 
-  virtual ~CDVDMsg() = default;
+  ~CDVDMsg() override = default;
 
   /**
    * checks for message type
    */
-  inline bool IsType(Message msg) XBMC_FORCE_INLINE
+  inline bool IsType(Message msg)
   {
     return (m_message == msg);
   }
 
-  inline Message GetMessageType() XBMC_FORCE_INLINE
+  inline Message GetMessageType()
   {
     return m_message;
   }
@@ -134,8 +122,8 @@ class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
   CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
- ~CDVDMsgGeneralSynchronize();
-  virtual long Release();
+ ~CDVDMsgGeneralSynchronize() override;
+  long Release() override;
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
@@ -158,8 +146,8 @@ public:
   T m_value;
 };
 
-typedef CDVDMsgType<bool>   CDVDMsgBool;
-typedef CDVDMsgType<int>    CDVDMsgInt;
+typedef CDVDMsgType<bool> CDVDMsgBool;
+typedef CDVDMsgType<int> CDVDMsgInt;
 typedef CDVDMsgType<double> CDVDMsgDouble;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +160,7 @@ class CDVDMsgPlayerSetAudioStream : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetAudioStream(int streamId) : CDVDMsg(PLAYER_SET_AUDIOSTREAM) { m_streamId = streamId; }
-  int GetStreamId()                     { return m_streamId; }
+  int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -190,7 +178,7 @@ class CDVDMsgPlayerSetSubtitleStream : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetSubtitleStream(int streamId) : CDVDMsg(PLAYER_SET_SUBTITLESTREAM) { m_streamId = streamId; }
-  int GetStreamId()                     { return m_streamId; }
+  int GetStreamId() { return m_streamId; }
 private:
   int m_streamId;
 };
@@ -199,7 +187,7 @@ class CDVDMsgPlayerSetState : public CDVDMsg
 {
 public:
   CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
-  std::string GetState()                { return m_state; }
+  std::string GetState() { return m_state; }
 private:
   std::string m_state;
 };
@@ -248,6 +236,51 @@ class CDVDMsgPlayerSeekChapter : public CDVDMsg
     int m_iChapter;
 };
 
+class CDVDMsgPlayerSetSpeed : public CDVDMsg
+{
+public:
+  struct SpeedParams
+  {
+    int m_speed;
+    bool m_isTempo;
+  };
+
+  CDVDMsgPlayerSetSpeed(SpeedParams params)
+  : CDVDMsg(PLAYER_SETSPEED)
+  , m_params(params)
+  {}
+
+  float GetSpeed() const { return m_params.m_speed; }
+  float IsTempo() const { return m_params.m_isTempo; }
+
+private:
+
+  SpeedParams m_params;
+
+};
+
+class CDVDMsgOpenFile : public CDVDMsg
+{
+public:
+  struct FileParams
+  {
+    CFileItem m_item;
+    CPlayerOptions m_options;
+  };
+
+  CDVDMsgOpenFile(const FileParams &params)
+  : CDVDMsg(PLAYER_OPENFILE)
+  , m_params(params)
+  {}
+
+  CFileItem& GetItem() { return m_params.m_item; }
+  CPlayerOptions& GetOptions() { return m_params.m_options; }
+
+private:
+
+  FileParams m_params;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 //////
 ////// DEMUXER_ Messages
@@ -258,12 +291,12 @@ class CDVDMsgDemuxerPacket : public CDVDMsg
 {
 public:
   CDVDMsgDemuxerPacket(DemuxPacket* packet, bool drop = false);
-  virtual ~CDVDMsgDemuxerPacket();
-  DemuxPacket* GetPacket()      { return m_packet; }
+  ~CDVDMsgDemuxerPacket() override;
+  DemuxPacket* GetPacket() { return m_packet; }
   unsigned int GetPacketSize();
-  bool         GetPacketDrop()  { return m_drop; }
+  bool GetPacketDrop() { return m_drop; }
   DemuxPacket* m_packet;
-  bool         m_drop;
+  bool m_drop;
 };
 
 class CDVDMsgDemuxerReset : public CDVDMsg

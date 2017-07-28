@@ -184,12 +184,18 @@
 #if defined(TARGET_ANDROID)
 #undef HAS_LINUX_EVENTS
 #undef HAS_LIRC
+#define HAS_ZEROCONF
 #endif
 
 // GLES2.0 detected. Dont use GL!
 #ifdef HAVE_LIBGLESV2
 #undef HAS_GL
 #define HAS_GLES 2
+#endif
+
+#ifdef HAVE_LIBGLESV3
+#undef HAS_GLES
+#define HAS_GLES 3
 #endif
 
 #ifdef HAS_DVD_DRIVE

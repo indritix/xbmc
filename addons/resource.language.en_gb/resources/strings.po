@@ -7677,7 +7677,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14224"
-msgid "Other"
+msgid "Startup"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7690,7 +7690,12 @@ msgctxt "#14226"
 msgid "Manage Sources"
 msgstr ""
 
-#empty strings from id 14227 to 14229
+#: system/settings/settings.xml
+msgctxt "#14227"
+msgid "Startup Settings"
+msgstr ""
+
+#empty strings from id 14228 to 14229
 
 #: system/settings/settings.xml
 msgctxt "#14230"
@@ -10070,17 +10075,7 @@ msgctxt "#19188"
 msgid "All your guide data will be cleared. Are you sure?"
 msgstr ""
 
-#. pvr settings "automatically start last played channel after Kodi startup" setting label
-#: system/settings/settings.xml
-msgctxt "#19189"
-msgid "Continue last channel on startup"
-msgstr ""
-
-#. pvr settings "automatically start last played channel after Kodi startup" setting value
-#: system/settings/settings.xml
-msgctxt "#19190"
-msgid "Background"
-msgstr ""
+# empty string from id 19189 to 19190
 
 #: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#19191"
@@ -10639,11 +10634,7 @@ msgctxt "#19287"
 msgid "All channels"
 msgstr ""
 
-#. pvr settings 'continue last channel on startup' setting value label.
-#: system/settings/settings.xml
-msgctxt "#19288"
-msgid "Foreground"
-msgstr ""
+# empty string with id 19288
 
 #. Label for button to hide a group in the group manager
 #: addons/skin.estuary/xml/DialogPVRGroupManager.xml
@@ -16792,7 +16783,32 @@ msgctxt "#35104"
 msgid "Pointers"
 msgstr ""
 
-#empty strings from id 35105 to 35149
+#. Heading for buttons mounted on a light gun. Used in the controller mapping dialog.
+msgctxt "#35105"
+msgid "Light gun"
+msgstr ""
+
+#. Heading for the button that shoots the lightgun offscreen when pressed. Used in the controller mapping dialog.
+msgctxt "#35106"
+msgid "Shoot offscreen"
+msgstr ""
+
+#. Heading for switches found on a game console, such as the Atari 2600. Used in the controller mapping dialog.
+msgctxt "#35107"
+msgid "Console switches"
+msgstr ""
+
+#. Heading for buttons that control the game console hardware, such as a microphone button. Used in the controller mapping dialog.
+msgctxt "#35108"
+msgid "Hardware buttons"
+msgstr ""
+
+#. Heading for buttons on a numeric keypad (containing 0-9, star and pound). Used in the controller mapping dialog.
+msgctxt "#35109"
+msgid "Keypad"
+msgstr ""
+
+#empty strings from id 35110 to 35149
 
 #. Name of keyboard category in the settings category window
 #: system/settings/settings.xml
@@ -16889,7 +16905,17 @@ msgctxt "#35165"
 msgid "Keyboard player"
 msgstr ""
 
-#empty strings from id 35166 to 35199
+#. Heading for the button that lets the user map any keyboard key. Used in the controller mapping dialog.
+msgctxt "#35166"
+msgid "All keys"
+msgstr ""
+
+#. Heading for the button that lets the user map individual keyboard keys. Used in the controller mapping dialog.
+msgctxt "#35167"
+msgid "Single keys"
+msgstr ""
+
+#empty strings from id 35168 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml
@@ -16985,7 +17011,19 @@ msgctxt "#35216"
 msgid "Support add-ons"
 msgstr ""
 
-#empty strings from id 35217 to 35219
+#. Dialog text asking user to overwrite their savestate file
+#: xbmc/cores/RetroPlayer/RetroPlayer.cpp"
+msgctxt "#35217"
+msgid "The savestate can only be loaded with \"{0:s}\". Erase savestate and continue?"
+msgstr ""
+
+#. Button to erase the savestate
+#: xbmc/cores/RetroPlayer/RetroPlayer.cpp"
+msgctxt "#35218"
+msgid "Erase savestate"
+msgstr ""
+
+#empty string with id 35219
 
 #. Description of add-on category for game providers
 #: xbmc/filesystem/AddonsDirectory.cpp
@@ -17688,7 +17726,11 @@ msgctxt "#36160"
 msgid "Enable VTB hardware decoding of video files."
 msgstr ""
 
-#empty string with id 36161
+#. Description of setting with label #508 "Startup action"
+#: system/settings/settings.xml
+msgctxt "#36161"
+msgid "Select an action Kodi will perform on startup."
+msgstr ""
 
 #. Description of setting with label #13432 "Allow hardware acceleration (VideoToolbox)"
 #: system/settings/settings.xml
@@ -18045,10 +18087,7 @@ msgctxt "#36227"
 msgid "Switch to full screen display when starting playback of channels and recordings."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36228"
-msgid "Continue with the last viewed channel on startup."
-msgstr ""
+# empty string with id 36228
 
 #: system/settings/settings.xml
 msgctxt "#36229"
@@ -18394,7 +18433,13 @@ msgctxt "#36291"
 msgid "Auto eject disc after rip is complete."
 msgstr ""
 
-#empty strings from id 36292 to 36301
+#. Description of settings category "Interface -> Startup" with label #14224
+#: system/settings/settings.xml
+msgctxt "#36292"
+msgid "This category contains startup settings."
+msgstr ""
+
+#empty strings from id 36293 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"
@@ -19592,6 +19637,12 @@ msgstr ""
 
 #empty strings from id 36578 to 36579
 
+#. primaries labels
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36579"
+msgid "UHDTV (BT.2020)"
+msgstr ""
+
 #. Dialog title for 3D LUT file picker
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#36580"
@@ -20360,7 +20411,7 @@ msgstr ""
 #. Description of section #14201 "Media"
 #: system/settings/settings.xml
 msgctxt "#38101"
-msgid "Section that contains the settings for sources and how media information is collected, stored, shown, and navigated"
+msgid "Section that contains the settings for sources and how media information is collected, stored, shown and navigated"
 msgstr ""
 
 #. Description of section #14203 "Customise"
@@ -20468,7 +20519,7 @@ msgstr ""
 #. Description of category "Library" with label #14202
 #: system/settings/settings.xml
 msgctxt "#39004"
-msgid "This category contains provides access to the windows for source management and the Library settings for the databases"
+msgid "This category provides access to the windows for source management and the Library settings for the databases"
 msgstr ""
 
 #. Description of setting "Videos... with label #14242
@@ -20576,4 +20627,22 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
 msgctxt "#39024"
 msgid "Dependencies"
+msgstr ""
+
+#empty strings from id 39025 to 39099
+
+#: system/settings/settings.xml
+msgctxt "#39100"
+msgid "Perform on startup"
+msgstr ""
+
+#. Startup action option label
+#: system/settings/settings.xml
+msgctxt "#39101"
+msgid "Play TV"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39102"
+msgid "Play Radio"
 msgstr ""

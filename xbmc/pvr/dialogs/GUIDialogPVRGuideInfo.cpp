@@ -72,26 +72,6 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage &message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonChannelGuide(CGUIMessage &message)
-{
-  bool bReturn = false;
-
-  if (message.GetSenderId() == CONTROL_BTN_CHANNEL_GUIDE)
-  {
-    if (!m_progItem || !m_progItem->HasPVRChannel())
-    {
-      /* invalid channel */
-      CGUIDialogOK::ShowAndGetInput(CVariant{19033}, CVariant{19136}); // Information, Channel unavailable
-      Close();
-      return bReturn;
-    }
-
-    bReturn = CServiceBroker::GetPVRManager().GUIActions()->ShowChannelEPG(CFileItemPtr(new CFileItem(m_progItem)));
-  }
-
-  return bReturn;
-}
-
 bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
 {
   bool bReturn = false;
@@ -190,8 +170,7 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
            OnClickButtonRecord(message) ||
            OnClickButtonPlay(message) ||
            OnClickButtonFind(message) ||
-           OnClickButtonAddTimer(message) ||
-           OnClickButtonChannelGuide(message);
+           OnClickButtonAddTimer(message);
   }
 
   return CGUIDialog::OnMessage(message);

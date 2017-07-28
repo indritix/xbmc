@@ -77,6 +77,22 @@ unsigned int CControllerLayout::FeatureCount(FEATURE_TYPE type      /* = FEATURE
   return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
 }
 
+FEATURE_TYPE CControllerLayout::FeatureType(const std::string &featureName) const
+{
+  FEATURE_TYPE type = FEATURE_TYPE::UNKNOWN;
+
+  auto it = std::find_if(m_features.begin(), m_features.end(),
+    [&featureName](const CControllerFeature &feature)
+    {
+      return feature.Name() == featureName;
+    });
+
+  if (it != m_features.end())
+    type = it->Type();
+
+  return type;
+}
+
 bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CController* controller)
 {
   Reset();
@@ -103,7 +119,7 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
   {
     if (pCategory->ValueStr() != LAYOUT_XML_ELM_CATEGORY)
     {
-      CLog::Log(LOGERROR, "<%s> tag is misnamed: <%s>", LAYOUT_XML_ELM_CATEGORY, pCategory->Value() ? pCategory->Value() : "");
+      CLog::Log(LOGDEBUG, "Ignoring <%s> tag", pCategory->ValueStr().c_str());
       continue;
     }
 
@@ -128,10 +144,8 @@ bool CControllerLayout::Deserialize(const TiXmlElement* pElement, const CControl
     {
       CControllerFeature feature;
 
-      if (!feature.Deserialize(pFeature, controller, category, strCategoryLabel))
-        return false;
-
-      m_features.push_back(feature);
+      if (feature.Deserialize(pFeature, controller, category, strCategoryLabel))
+        m_features.push_back(feature);
     }
   }
 

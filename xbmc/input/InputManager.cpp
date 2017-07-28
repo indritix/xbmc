@@ -100,10 +100,20 @@ CInputManager::CInputManager(const CAppParamParser &params) :
 
   if (!params.RemoteControlEnabled())
     DisableRemoteControl();
+
+  // Register settings
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
+  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
 }
 
 CInputManager::~CInputManager()
 {
+  Deinitialize();
+
+  // Unregister settings
+  CServiceBroker::GetSettings().UnregisterCallback(this);
+
   UnregisterKeyboardHandler(m_keyboardEasterEgg.get());
 
   m_buttonTranslator->UnregisterMapper(m_touchTranslator.get());
@@ -125,11 +135,9 @@ void CInputManager::InitializeInputs()
 
 void CInputManager::Deinitialize()
 {
-}
-
-void CInputManager::SetEnabledJoystick(bool enabled /* = true */)
-{
-  //! @todo
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  m_RemoteControl.Disconnect();
+#endif
 }
 
 bool CInputManager::ProcessRemote(int windowId)
@@ -371,7 +379,10 @@ bool CInputManager::Process(int windowId, float frameTime)
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
   ProcessQueuedActions();
-  
+
+  // Inform the environment of the new active window ID
+  m_keymapEnvironment->SetWindowID(windowId);
+
   return true;
 }
 

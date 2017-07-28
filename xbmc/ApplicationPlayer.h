@@ -28,7 +28,6 @@
 #include "threads/SystemClock.h"
 #include "guilib/Resolution.h"
 #include "cores/IPlayer.h"
-#include "pvr/PVRTypes.h"
 
 typedef enum
 {
@@ -60,8 +59,6 @@ class CApplicationPlayer
   int m_iVideoStream;
   XbmcThreads::EndTime m_subtitleStreamUpdate;
   int m_iSubtitleStream;
-  XbmcThreads::EndTime m_speedUpdate;
-  float m_fPlaySpeed;
 
 public:
   CApplicationPlayer();
@@ -72,10 +69,12 @@ public:
   void ClosePlayerGapless(std::string &playername);
   void CreatePlayer(const std::string &player, IPlayerCallback& callback);
   std::string GetCurrentPlayer();
-  float  GetPlaySpeed();
+  float GetPlaySpeed();
+  float GetPlayTempo();
   bool HasPlayer() const;
   PlayBackRet OpenFile(const CFileItem& item, const CPlayerOptions& options);
   void SetPlaySpeed(float speed);
+  void SetTempo(float tempo);
 
   void FrameMove();
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
@@ -169,7 +168,6 @@ public:
   void  SetTotalTime(int64_t time);
   void  SetVideoStream(int iStream);
   void  SetVolume(float volume);
-  bool  SwitchChannel(const PVR::CPVRChannelPtr &channel);
   void  SetSpeed(float speed);
   bool SupportsTempo();
 

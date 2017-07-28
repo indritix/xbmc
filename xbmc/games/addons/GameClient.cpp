@@ -35,6 +35,7 @@
 #include "games/addons/playback/GameClientRealtimePlayback.h"
 #include "games/addons/playback/GameClientReversiblePlayback.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "games/ports/PortManager.h"
 #include "games/GameServices.h"
 #include "guilib/GUIWindowManager.h"
@@ -809,7 +810,7 @@ void CGameClient::UpdatePort(unsigned int port, const ControllerPtr& controller)
       controllerStruct.accelerometer_count  = controller->Layout().FeatureCount(FEATURE_TYPE::ACCELEROMETER);
       controllerStruct.key_count            = 0; //! @todo
       controllerStruct.rel_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::RELPOINTER);
-      controllerStruct.abs_pointer_count    = 0; //! @todo
+      controllerStruct.abs_pointer_count    = controller->Layout().FeatureCount(FEATURE_TYPE::ABSPOINTER);
       controllerStruct.motor_count          = controller->Layout().FeatureCount(FEATURE_TYPE::MOTOR);
 
       try { m_struct.toAddon.UpdatePort(port, true, &controllerStruct); }

@@ -23,8 +23,10 @@
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIWindowManager.h"
+#include "cores/DataCacheCore.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "settings/MediaSettings.h"
 
 CApplicationPlayer::CApplicationPlayer()
@@ -74,12 +76,15 @@ void CApplicationPlayer::ClosePlayerGapless(std::string &playername)
   }
   else
   {
-    // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
-    // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
-    // but if we do not stop it, we can not distinguish callbacks from previous
-    // item and current item, it will confused us then we can not make correct delay
-    // callback after the starting state.
-    CloseFile(true);
+    if (player->m_type != "video")
+    {
+      // XXX: we had to stop the previous playing item, it was done in VideoPlayer::OpenFile.
+      // but in paplayer::OpenFile, it sometimes just fade in without call CloseFile.
+      // but if we do not stop it, we can not distinguish callbacks from previous
+      // item and current item, it will confused us then we can not make correct delay
+      // callback after the starting state.
+      CloseFile(true);
+    }
   }
 }
 
@@ -88,6 +93,7 @@ void CApplicationPlayer::CreatePlayer(const std::string &player, IPlayerCallback
   CSingleLock lock(m_player_lock);
   if (!m_pPlayer)
   {
+    CDataCacheCore::GetInstance().Reset();
     m_pPlayer.reset(CPlayerCoreFactory::GetInstance().CreatePlayer(player, callback));
   }
 }
@@ -120,15 +126,14 @@ PlayBackRet CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOpt
     m_audioStreamUpdate.SetExpired();
     m_videoStreamUpdate.SetExpired();
     m_subtitleStreamUpdate.SetExpired();
-    m_speedUpdate.SetExpired();
   }
   return iResult;
 }
 
-bool CApplicationPlayer::HasPlayer() const 
-{ 
+bool CApplicationPlayer::HasPlayer() const
+{
   std::shared_ptr<IPlayer> player = GetInternal();
-  return player != NULL; 
+  return player != NULL;
 }
 
 int CApplicationPlayer::GetChapter()
@@ -136,7 +141,7 @@ int CApplicationPlayer::GetChapter()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapter();
-  else 
+  else
     return -1;
 }
 
@@ -145,7 +150,7 @@ int CApplicationPlayer::GetChapterCount()
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetChapterCount();
-  else 
+  else
     return 0;
 }
 
@@ -243,7 +248,6 @@ void CApplicationPlayer::Pause()
   if (player)
   {
     player->Pause();
-    m_speedUpdate.SetExpired();
   }
 }
 
@@ -476,6 +480,13 @@ void CApplicationPlayer::SetSpeed(float speed)
     player->SetSpeed(speed);
 }
 
+void CApplicationPlayer::SetTempo(float tempo)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetTempo(tempo);
+}
+
 void CApplicationPlayer::DoAudioWork()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -673,12 +684,6 @@ void CApplicationPlayer::SetDynamicRangeCompression(long drc)
     player->SetDynamicRangeCompression(drc);
 }
 
-bool CApplicationPlayer::SwitchChannel(const PVR::CPVRChannelPtr &channel)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->SwitchChannel(channel));
-}
-
 void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -719,20 +724,25 @@ void CApplicationPlayer::SetPlaySpeed(float speed)
     return ;
 
   SetSpeed(speed);
-  m_speedUpdate.SetExpired();
 }
 
 float CApplicationPlayer::GetPlaySpeed()
 {
-  if (!m_speedUpdate.IsTimePast())
-    return m_fPlaySpeed;
-
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
-    m_fPlaySpeed = player->GetSpeed();
-    m_speedUpdate.Set(1000);
-    return m_fPlaySpeed;
+    return CDataCacheCore::GetInstance().GetSpeed();
+  }
+  else
+    return 0;
+}
+
+float CApplicationPlayer::GetPlayTempo()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    return CDataCacheCore::GetInstance().GetTempo();
   }
   else
     return 0;
@@ -810,7 +820,7 @@ bool CApplicationPlayer::IsRenderingGuiLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingGuiLayer();
+    return CServiceBroker::GetDataCacheCore().GetGuiRender();
   else
     return false;
 }
@@ -819,7 +829,7 @@ bool CApplicationPlayer::IsRenderingVideoLayer()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    return player->IsRenderingVideoLayer();
+    return CServiceBroker::GetDataCacheCore().GetVideoRender();
   else
     return false;
 }

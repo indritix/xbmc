@@ -290,20 +290,6 @@ namespace PVR
     bool OpenStream(const CPVRChannelPtr &channel, bool bIsSwitchingChannel);
 
     /*!
-     * @brief Get the URL for the stream to the given channel.
-     * @param channel The channel to get the stream url for.
-     * @return The requested stream url or an empty string if it wasn't found.
-     */
-    std::string GetStreamURL(const CPVRChannelPtr &channel);
-
-    /*!
-     * @brief Switch an opened live tv stream to another channel.
-     * @param channel The channel to switch to.
-     * @return True if the switch was successful, false otherwise.
-     */
-    bool SwitchChannel(const CPVRChannelPtr &channel);
-
-    /*!
      * @brief Get the channel that is currently playing.
      * @return the channel that is currently playing, NULL otherwise.
      */
@@ -661,11 +647,8 @@ namespace PVR
      */
     bool IsKnownClient(const ADDON::AddonPtr &client) const;
 
-
     int GetClientId(const ADDON::AddonPtr &client) const;
 
-
-    bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
     bool                  m_bIsPlayingLiveTV;
     bool                  m_bIsPlayingRecording;

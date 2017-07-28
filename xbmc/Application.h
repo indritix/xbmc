@@ -112,6 +112,13 @@ struct ReplayGainSettings
   bool bAvoidClipping;
 };
 
+enum StartupAction
+{
+  STARTUP_ACTION_NONE = 0,
+  STARTUP_ACTION_PLAY_TV,
+  STARTUP_ACTION_PLAY_RADIO
+};
+
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
@@ -137,6 +144,8 @@ public:
   virtual void Preflight();
   bool Create(const CAppParamParser &params);
   bool Cleanup() override;
+
+  bool IsInitialized() { return !m_bInitializing; }
 
   bool CreateGUI();
   bool InitWindow(RESOLUTION res = RES_INVALID);
